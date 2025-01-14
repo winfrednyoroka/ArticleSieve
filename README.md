@@ -4,9 +4,9 @@
 1. Motivation / Rationale
 2. Methods
 3. Results
-   a.Implementation
-  b. Validation
-4. Conclusion
+      Implementation
+      Validation
+5. Conclusion
 
 ## Data availability
 The data used in this work are found ...

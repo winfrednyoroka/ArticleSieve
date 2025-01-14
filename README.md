@@ -4,8 +4,8 @@
 1. Motivation / Rationale
 2. Methods
 3. Results
-      Implementation
-      Validation
+*     Implementation
+*     Validation
 5. Conclusion
 
 ## Data availability

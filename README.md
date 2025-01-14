@@ -1,12 +1,12 @@
 # Project Title
 
 ## Abstract
-1. Motivation / Rationale
-2. Methods
-3. Results
+* Motivation / Rationale
+* Methods
+* Results
 *     Implementation
 *     Validation
-5. Conclusion
+* Conclusion
 
 ## Data availability
 The data used in this work are found ...

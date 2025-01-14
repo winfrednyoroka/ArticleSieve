@@ -19,5 +19,8 @@ To use this you need to ...
 This piece of work was ...
 
 ## Authors
-1. xxxxx
+1. Winfred Gatua
+2. Yi Liu
+3. Deborah Lawlor
+4. Tom Gaunt
 

@@ -1,4 +1,4 @@
-# Project Title
+# Automated screening of articles by title and abstracts
 
 ## Abstract
 * Motivation / Rationale

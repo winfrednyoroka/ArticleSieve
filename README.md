@@ -1,6 +1,6 @@
 # Automated screening of articles by title and abstracts
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/winfrednyoroka/ArticleSieve/HEAD?labpath=https%3A%2F%2Fgithub.com%2Fwinfrednyoroka%2FArticleSieve%2Fblob%2Fmain%2FNotebooks%2FScreeningpapers.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/winfrednyoroka/ArticleSieve/fa1e4547f1809e6d0009907849f30d92ea6a0b2a?urlpath=lab%2Ftree%2FNotebooks%2FScreeningpapers.ipynb)
 
 ## Abstract
 * Motivation / Rationale

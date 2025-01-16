@@ -3,6 +3,7 @@
 ## Abstract
 * Motivation / Rationale
 * Methods
+  ![Autoscreeningstrategy](./Images/Screening_usingBERT.png)
 * Results
 *     Implementation
 *     Validation

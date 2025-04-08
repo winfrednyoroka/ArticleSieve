@@ -31,34 +31,40 @@ def clean_abstract(abstract):
 def construct_prompt(title, abstract):
     """Create a structured prompt for OpenAI API based on title and abstract."""
     return f"""
-    Extract key terms from the following title and abstract and provide analysis in the specified JSON format.
+    You are a researcher rigorously screening titles and abstracts of scientific papers for inclusion or exclusion in a review paper.
+Extract key terms from the following title and abstract and provide analysis in the specified JSON format.
 
 Terms to extract:
 1. Adulthood body mass index OR BMI OR adiposity
 2. Mendelian randomisation (including alternate spelling "Mendelian randomization")
-3. Cardiovascular disease OR any of the following blood pressure terms: hypertension, high blood pressure, systolic blood pressure, diastolic blood pressure (note: multiple blood pressure terms count as just one match for category #3)
-4. European OR white OR caucasian population/ancestry
+3. Blood pressure terms: hypertension, high blood pressure, systolic blood pressure, diastolic blood pressure (note: multiple blood pressure terms count as just one match for category #3)
+4. European OR white OR caucasian population/ancestry OR mentions European country
 
 For each term category, extract the EXACT phrasing as it appears in the document.
 
 IMPORTANT RULES:
-- "CVD" should only be counted when it explicitly refers to cardiovascular disease, not cerebrovascular disease
 - For category #4, terms like "nonwhite," "non-white," "non-European," or similar negations should NOT be counted as matches for European/white/caucasian ancestry
 - Only count exact matches and do not include negated terms (terms with "non-" prefix or similar negations)
+- For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, not just as a covariate or mediator or outcome.
+- For Blood pressure terms: Check if Blood pressure term is studied as an outcome, not an exposure or mediator or covariate.
 
+Calculate relevance score using these point system:
+- BMI/adiposity as main exposure: +1 point
+- BMI/adiposity present but not as main exposure: -1 points
+- BMI/adiposity absent: -2 points
+- Blood pressure terms present: +1 point
+- Blood pressure terms absent: -1 point
+- Mendelian randomisation present: +1 point
+- Mendelian randomisation absent: -1 point
+- European/white/caucasian ancestry present: +1 point
+- European/white/caucasian ancestry absent: -2 point
 
-
-Calculate relevance score using these criteria:
-- 4 points: All 4 term categories present (in either title or abstract)
-- 3 points: 3 term categories present
-- 0 points: 2 term categories present
-- -2 points: Only 1 term category present
-- -4 points: None of the terms present
+The final score is the sum of these individual scores.
 
 Title: "{title}"
 Abstract: "{abstract}"
 
-Output **MUST** strictly follow this JSON structure:
+Output MUST strictly follow this JSON structure:
 {{
   "document_info": {{
     "title": "{title}",
@@ -68,7 +74,8 @@ Output **MUST** strictly follow this JSON structure:
     "bmi_adiposity": {{
       "present": true/false,
       "locations": ["title", "abstract"],
-      "variations_found": ["exact phrases as they appear in the text"]
+      "variations_found": ["exact phrases as they appear in the text"],
+      "is_main_exposure": true/false
     }},
     "mendelian_randomisation": {{
       "present": true/false,
@@ -87,19 +94,18 @@ Output **MUST** strictly follow this JSON structure:
     }}
   }},
   "score": {{
-    "value": -4 to 4,
+    "value": [calculated total score],
     "breakdown": {{
-      "bmi_adiposity": true/false,
-      "mendelian_randomisation": true/false,
-      "cardiovascular": true/false,
-      "european_ancestry": true/false
+      "bmi_adiposity": [+1 or -1 or -2],
+      "mendelian_randomisation": [+1 or -1],
+      "blood pressure terms": [+1 or -1],
+      "european_ancestry": [+1 or -2]
     }},
-    "justification": "Brief explanation of score based on presence/absence of terms."
+    "justification": "Brief explanation of score based on exact terms present/absent and whether BMI is a main exposure variable."
   }}
 }}
 
 Respond **ONLY** with the JSON output and nothing else.
-
 
 """
 

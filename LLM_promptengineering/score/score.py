@@ -59,44 +59,44 @@ Title: "{title}"
 Abstract: "{abstract}"
 
 Output **MUST** strictly follow this JSON structure:
-{
-  "document_info": {
+{{
+  "document_info": {{
     "title": "{title}",
     "abstract_preview": "{abstract[:50]}..."
-  },
-  "term_analysis": {
-    "bmi_adiposity": {
+  }},
+  "term_analysis": {{
+    "bmi_adiposity": {{
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"]
-    },
-    "mendelian_randomisation": {
+    }},
+    "mendelian_randomisation": {{
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"]
-    },
-    "cardiovascular": {
+    }},
+    "cardiovascular": {{
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"]
-    },
-    "european_ancestry": {
+    }},
+    "european_ancestry": {{
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"]
-    }
-  },
-  "score": {
+    }}
+  }},
+  "score": {{
     "value": -4 to 4,
-    "breakdown": {
+    "breakdown": {{
       "bmi_adiposity": true/false,
       "mendelian_randomisation": true/false,
       "cardiovascular": true/false,
       "european_ancestry": true/false
-    },
+    }},
     "justification": "Brief explanation of score based on presence/absence of terms."
-  }
-}
+  }}
+}}
 
 Respond **ONLY** with the JSON output and nothing else.
 

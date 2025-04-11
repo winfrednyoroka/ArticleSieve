@@ -31,36 +31,34 @@ def clean_abstract(abstract):
 def construct_prompt(title, abstract):
     """Create a structured prompt for OpenAI API based on title and abstract."""
     return f"""
-    You are a researcher rigorously screening titles and abstracts of scientific papers for inclusion or exclusion in a review paper.
+    You are a researcher rigorously screening titles and abstracts of scientific papers for inclusion and exclusion in a review paper.
 Extract key terms from the following title and abstract and provide analysis in the specified JSON format.
 
 Terms to extract:
 1. Adulthood body mass index OR BMI OR adiposity
 2. Mendelian randomisation (including alternate spelling "Mendelian randomization")
 3. Blood pressure terms: hypertension, high blood pressure, systolic blood pressure, diastolic blood pressure (note: multiple blood pressure terms count as just one match for category #3)
-4. European OR white OR Caucasian population/ancestry OR mentions European country
+4. European ancestry terms such as European OR white OR caucasian population/ancestry OR mentions European country
+5. Review terms such as umbrella review OR scoping review OR systematic review
+
 
 For each term category, extract the EXACT phrasing as it appears in the document.
 
 IMPORTANT RULES:
 - For category #4, terms like "nonwhite," "non-white," "non-European," or similar negations should NOT be counted as matches for European/white/caucasian ancestry/mentions European country.
 - Only count exact matches and do not include negated terms (terms with "non-" prefix or similar negations).
+- For country names, first extract ALL country names mentioned, then identify which ones are European countries
+- If no relevant terms are found, state "No European ancestry or country terms found"
+- For each match, provide the exact quote with minimal surrounding context
+
+- Extract only information related to adult body mass index (BMI), obesity in adults, or adiposity measurements in adult populations. DO NOT include any findings related to childhood obesity or BMI in subjects under 18 years of age.
 - For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, not just as a covariate or mediator or outcome.
-- For Blood pressure terms: Check if Blood pressure term is studied as an outcome, not an exposure or mediator or covariate.
 
-Calculate relevance score using these point system:
-- BMI/adiposity as main exposure: +1 point
-- BMI/adiposity present but not as main exposure: -1 points
-- BMI/adiposity absent: -2 points
-- Blood pressure terms present: +1 point
-- Blood pressure terms present but not as main outcome: -1 point
-- Blood pressure terms absent: -2 point
-- Mendelian randomisation present: +1 point
-- Mendelian randomisation absent: -1 point
-- European/white/caucasian ancestry present: +1 point
-- European/white/caucasian ancestry absent: -2 point
+- For Blood pressure terms: Check if Blood pressure term is studied as an outcome, not an exposure or covariate. 
+- MUST EXCLUDE any pregnancy and maternal related Blood pressure terms.
 
-The final score is the sum of these individual scores.
+- Mendelian randomisation MUST be the method used to study the causal relationship.
+
 
 Title: "{title}"
 Abstract: "{abstract}"
@@ -81,30 +79,27 @@ Output MUST strictly follow this JSON structure:
     "mendelian_randomisation": {{
       "present": true/false,
       "locations": ["title", "abstract"],
-      "variations_found": ["exact phrases as they appear in the text"]
+      "variations_found": ["exact phrases as they appear in the text"],
+      "is_main_method": true/false
     }},
     "blood_pressure": {{
       "present": true/false,
       "locations": ["title", "abstract"],
-      "variations_found": ["exact phrases as they appear in the text"],
-      "is_main_outcome": true/false
-      
+      "variations_found": ["exact phrases as they appear in the text"]
     }},
     "european_ancestry": {{
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"]
+    }},
+    "reviews": {{
+      "present": true/false,
+      "locations": ["title", "abstract"],
+      "variations_found": ["exact phrases as they appear in the text"]
     }}
   }},
-  "score": {{
-    "value": [calculated total score],
-    "breakdown": {{
-      "bmi_adiposity": [+1 or -1 or -2],
-      "mendelian_randomisation": [+1 or -1],
-      "blood pressure terms": [+1 or -1 or -2],
-      "european_ancestry": [+1 or -2]
-    }},
-    "justification": "Brief explanation of score based on exact terms present/absent and whether BMI is a main exposure variable."
+  "Reason": {{
+    "justify": "Brief string of all the exact terms present in the title and abstract."
   }}
 }}
 

@@ -9,7 +9,9 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Load API Key
 load_dotenv()
-api_KEY = os.getenv('OPENAI_API_KEY')
+#api_KEY = os.getenv('OPENAI_API_KEY') - Personal access key
+
+api_KEY = os.getenv('openaiuob_api_key') # API key via UoB organisation
 
 # Set up OpenAI client
 client = OpenAI(api_key=api_KEY)
@@ -52,9 +54,9 @@ IMPORTANT RULES:
 - For each match, provide the exact quote with minimal surrounding context
 
 - Extract only information related to adult body mass index (BMI), obesity in adults, or adiposity measurements in adult populations. DO NOT include any findings related to childhood obesity or BMI in subjects under 18 years of age.
-- For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, not just as a covariate or mediator or outcome.
+- For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, NOT just as a covariate or mediator or outcome.
 
-- For Blood pressure terms: Check if Blood pressure term is studied as an outcome, not an exposure or covariate. 
+- For Blood pressure terms: Check if Blood pressure term is studied as an outcome, NOT an exposure or covariate. 
 - MUST EXCLUDE any pregnancy and maternal related Blood pressure terms.
 
 - Mendelian randomisation MUST be the method used to study the causal relationship.
@@ -85,12 +87,15 @@ Output MUST strictly follow this JSON structure:
     "blood_pressure": {{
       "present": true/false,
       "locations": ["title", "abstract"],
-      "variations_found": ["exact phrases as they appear in the text"]
+      "variations_found": ["exact phrases as they appear in the text"],
+      "is_main_outcome": true/false
+      
     }},
     "european_ancestry": {{
       "present": true/false,
       "locations": ["title", "abstract"],
-      "variations_found": ["exact phrases as they appear in the text"]
+      "variations_found": ["exact phrases as they appear in the text"],
+      "is_main_ancestry": true/false
     }},
     "reviews": {{
       "present": true/false,
@@ -99,7 +104,7 @@ Output MUST strictly follow this JSON structure:
     }}
   }},
   "Reason": {{
-    "justify": "Brief string of all the exact terms present in the title and abstract."
+    "justify": "Brief string of all the EXACT terms present in the title and abstract AND record those that are missing."
   }}
 }}
 

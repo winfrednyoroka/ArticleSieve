@@ -52,14 +52,17 @@ IMPORTANT RULES:
 - For country names, first extract ALL country names mentioned, then identify which ones are European countries
 - If no relevant terms are found, state "No European ancestry or country terms found"
 - For each match, provide the exact quote with minimal surrounding context
+- CHECK ancestry is European
 
 - Extract only information related to adult body mass index (BMI), obesity in adults, or adiposity measurements in adult populations. DO NOT include any findings related to childhood obesity or BMI in subjects under 18 years of age.
 - For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, NOT just as a covariate or mediator or outcome.
 
 - For Blood pressure terms: Check if Blood pressure term is studied as an outcome, NOT an exposure or covariate. 
 - MUST EXCLUDE any pregnancy and maternal related Blood pressure terms.
+- CHECK blood pressure term is Main outcome
 
-- Mendelian randomisation MUST be the method used to study the causal relationship.
+- Mendelian randomisation MUST be the method used to study the causal relationship
+- Check Main method in use is Mendelian randomisation
 
 
 Title: "{title}"
@@ -95,7 +98,7 @@ Output MUST strictly follow this JSON structure:
       "present": true/false,
       "locations": ["title", "abstract"],
       "variations_found": ["exact phrases as they appear in the text"],
-      "is_main_ancestry": true/false
+      "is_ancestry_European": true/false
     }},
     "reviews": {{
       "present": true/false,

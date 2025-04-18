@@ -193,3 +193,57 @@ def process_articles(uploaded_file):
             json.dump(response_data, json_file, indent=4)
 
         print(f"Processed {title} -> {output_filename}")
+
+
+
+# Processing the json files, aiming to write out the content to a single csv file to be processed later using pandas
+def process_json_files(directory,full_output_file, table_keyword="article"):
+    """
+    Processes JSON files in a directory, filters them by a keyword in their filename,
+    extracts and normalizes their contents, writes full CSVs.
+
+    Parameters:
+        directory (str): Path to the directory containing JSON files.
+        full_output_file (str): User supplied named extracted from the app input.
+        table_keyword (str): Keyword to filter relevant JSON filenames.
+    """
+    if not full_output_file.endswith(".csv"):
+        full_output_file += ".csv"
+    
+    json_data = []
+    # Load JSON files
+    for filename in os.listdir(directory):
+        if table_keyword in filename and filename.endswith('.json'):
+            file_path = os.path.join(directory, filename)
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+                if isinstance(data, dict):
+                    json_data.append(data)
+                elif isinstance(data, list):
+                    json_data.extend(data)
+
+    # Normalize to DataFrame
+    df = pd.json_normalize(json_data)
+
+    # Save full DataFrame
+    df.to_csv(full_output_file, index=False)
+    print(f"Full data written to {full_output_file}")
+    return (df)
+
+
+
+def scorecard_modified(row):
+        return( int(row["term_analysis.bmi_adiposity.present"]*2)+
+            int(row["term_analysis.bmi_adiposity.is_main_exposure"]*10)+
+            int(row["term_analysis.blood_pressure.present"]*2)+
+            int(row["term_analysis.blood_pressure.is_main_outcome"]*10)+
+            int(row["term_analysis.mendelian_randomisation.present"]*2)+
+            #int(row["term_analysis.mendelian_randomisation.is_main_method"]*2)+
+            int(row["term_analysis.european_ancestry.present"]*2)
+            #int(row["term_analysis.european_ancestry.is_ancestry_European"]*5)
+        )
+
+
+
+
+

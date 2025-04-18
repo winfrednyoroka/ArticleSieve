@@ -2,18 +2,17 @@
 # Build a streamlit webapp
 
 import streamlit as st
+import time
 import os
 import pandas as pd
 import json
-
-
-import streamlit as st
-import pandas as pd
 import plotly.express as px
-from utils import test_utils,clean_abstract,construct_prompt,query_openai,process_articles
+from utils import test_utils,clean_abstract,construct_prompt,query_openai,process_articles, process_json_files
 
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="ArticleSieve",
+    page_icon="🌀",
+    layout="wide")
 st.write(test_utils('Hello world'))
 # st.subheader("Portable function")
 # def clean_abstract(abstract):
@@ -21,7 +20,8 @@ st.write(test_utils('Hello world'))
 #     if pd.isna(abstract) or abstract.strip() == "":
 #         return "N/A"
 #     return abstract
-
+st.title("🔍🌀🧠 ArticleSieve")
+st.caption('Your smart article filter ')
 # Sidebar with expanders
 with st.sidebar:
     st.title("📚 ArticleSieve")
@@ -54,7 +54,15 @@ data =None
 if uploaded_file:
     file_type = uploaded_file.name.split('.')[-1]
     if file_type == 'csv':
-        #process_articles(uploaded_file)
+        with st.spinner('Wait as I query each article using GPT models....', show_time=True):
+            progress_bar = st.progress(0)
+            for percent_complete in range(100):
+                time.sleep(0.05)
+                #process_articles(uploaded_file)
+                progress_bar.progress(percent_complete + 1)
+        st.success('Hooray! Completed querying the articles')
+        st.button("Rerun")
+        uploaded_file.seek(0)
         data = pd.read_csv(uploaded_file) 
         st.success("File uploaded successfully!")
         st.write(data.head())
@@ -64,13 +72,11 @@ if uploaded_file:
 else:
     st.info("👈 Upload a file to get started.")
 
-st.subheader("Data preprocessing")
-# st.write(process_articles(uploaded_file))
-st.success('Completed querying the articles')
 
-
-st.subheader("Data visualisation")
-
+# with st.spinner('Wait as I query GPT....', show_time=True):
+#      st.write(process_articles(uploaded_file)
+# st.success('Completed querying the articles')
+# st.button("Rerun")
 
 #st.write(data.head())
 # st.write(os.getcwd())
@@ -109,5 +115,15 @@ st.subheader("Data visualisation")
 
 # st.write("Calculate the score for each article")
 
-#st.write("Visualise the score and each article and come up with clusters")
+st.subheader("Data preprocessing")
+#st.write("Prompt the user for output file name.")
+output_file = st.text_input("Enter the name for the full output CSV (e.g., all_data.csv): ")
+st.write(output_file)
 
+# May consider future modifications to be asking user the path to where the json files were written to
+process_json_files(directory="./",full_output_file=output_file,table_keyword='article')
+
+
+st.text('Calculate the total scores from the merged dataframe')
+
+st.subheader("Data visualisation")

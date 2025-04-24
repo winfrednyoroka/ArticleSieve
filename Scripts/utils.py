@@ -74,7 +74,7 @@ IMPORTANT RULES:
 - Extract only information related to adult body mass index (BMI), obesity in adults, or adiposity measurements in adult populations. DO NOT include any findings related to childhood obesity or BMI in subjects under 18 years of age.
 - For BMI/adiposity terms: Check if BMI is being studied as an exposure/predictor of blood pressure, NOT just as a covariate or mediator or outcome.
 - For Blood pressure terms: Check if Blood pressure term is studied as an outcome, NOT an exposure or covariate. 
-- MUST EXCLUDE any pregnancy and maternal related Blood pressure terms.
+- MUST EXCLUDE any PREGNANCY RELATED  terms.
 - CHECK blood pressure term is Main outcome
 - Mendelian randomisation MUST be the method used to study the causal relationship
 - Check Main method in use is Mendelian randomisation
@@ -231,7 +231,7 @@ def process_json_files(directory,full_output_file, table_keyword="article"):
     return (df)
 
 
-
+# A overall score to determine the relevance of each article
 def scorecard_modified(row):
         return( int(row["term_analysis.bmi_adiposity.present"]*2)+
             int(row["term_analysis.bmi_adiposity.is_main_exposure"]*10)+
